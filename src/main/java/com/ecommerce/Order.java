@@ -11,8 +11,8 @@ public class Order {
     public Order(int orderId, List<Product> products) {
         this.orderId = orderId;
         this.products = products;
+        this.status = OrderStatus.PENDING;
         this.totalPrice = calculateTotalPrice();
-        // FIXME: The constructor should set the initial status to PENDING
     }
 
     /**
@@ -21,7 +21,8 @@ public class Order {
      * @return The total price of the order.
      */
     private double calculateTotalPrice() {
-        // FIXME: This method should return the total price, instead of returning zero
+        if (products != null) 
+            return products.stream().mapToDouble(Product::getPrice).sum();
         return 0;
     }
 
@@ -47,6 +48,12 @@ public class Order {
      * @param status The new status of the order.
      */
     public void setStatus(OrderStatus status) {
-        // TODO: implement this method
+        // We first want to check that the new status is valid, i.e. that it is within the allowed statuses.
+        try {
+            OrderStatus.valueOf(status.name());
+            this.status = status;
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid order status: " + status);
+        }
     }
 }

@@ -25,7 +25,12 @@ public class ShoppingCart {
      * @param product The product to remove.
      */
     public void removeProduct(Product product) {
-        // TODO: Implement this method
+        if (items.contains(product)) {
+            items.remove(product);
+        }
+        else {
+            System.err.println("Product not found in shopping cart.");
+        }
     }
 
     public List<Product> getItems() {
@@ -38,15 +43,18 @@ public class ShoppingCart {
      * @return The total price.
      */
     public double calculateTotal() {
-        // FIXME: This method should calculate the total price of the items in the cart
-        // There is a bug here, the total is always 0
-        return 0.0;
+        return items.isEmpty() ? 0.0 : items.stream().mapToDouble(Product::getPrice).sum();
     }
 
     /**
      * Clears all items from the shopping cart.
      */
     public void clearCart() {
-        // TODO: Implement this method
+        if (!items.isEmpty()) {
+            items.clear();
+        }
+        else {
+            System.err.println("Shopping cart is already empty.");
+        }
     }
 }
