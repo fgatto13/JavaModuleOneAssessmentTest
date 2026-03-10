@@ -21,7 +21,7 @@ public class Inventory {
      * @throws ProductNotFoundException if no product with the given id exists.
      */
     public void removeProduct(int productId) throws ProductNotFoundException {
-        Product productToRemove = findProductById(productId);
+        Product productToRemove = findProductById(productId, false);
         if (productToRemove != null) {
             products.remove(productToRemove);
         } else {
@@ -29,13 +29,23 @@ public class Inventory {
         }
     }
 
-    public Product findProductById(int productId) {
+    /**
+     * This function either returns a copy of the object, or the reference to it.
+     * Therefore, it is up to the caller to specify wether it wants a copy of the object or the object itself.
+     * 
+     * @param productId is the id of the product we're looking for (int)
+     * @param asksForCopy is a boolean to check wether the caller wants a copy or the reference
+     * @return either an object (or its copy) or null
+     */
+    public Product findProductById(int productId, boolean asksForCopy) {
         for (Product product : products) {
             if (product.getId() == productId) {
-                // since we only want to find the product, we need to avoid passing it directly, 
-                // otherwise any unallowed mod to that object would be reflected in the corresponding product in the Inventory.
-                // Because of that, we need to return a COPY of the actual item, not the item itself.
-                return new Product(product.getId(), product.getName(), product.getPrice(), product.getStockQuantity());
+                if (asksForCopy) {
+                    return new Product(product.getId(), product.getName(), product.getPrice(), product.getStockQuantity());
+                }
+                else{
+                    return product;
+                }
             }
         }
         return null;
@@ -50,7 +60,7 @@ public class Inventory {
     public void reduceStock(int productId, int quantity) {
         // first of all, we need to find the prouduct in the inventory. 
         // Since Java passes the reference of the object, we can directly modify the variable, w/o needing to manually updating the collection.
-        Product productToIncrement = findProductById(productId);
+        Product productToIncrement = findProductById(productId, false);
         // we want to check that the product exists before we move on
         try{
             if (productToIncrement != null) {
@@ -75,7 +85,7 @@ public class Inventory {
      * @return The current stock quantity.
      */
     public int getStock(int productId) {
-        Product product = findProductById(productId);
+        Product product = findProductById(productId, false);
         if (product != null) {
             return product.getStockQuantity();
         }

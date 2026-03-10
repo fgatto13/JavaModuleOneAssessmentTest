@@ -31,7 +31,7 @@ class ECommerceTest {
     @Test
     @DisplayName("1. Asserts that price of an Order is calculated correctly")
     void testCalculateTotalPriceOfOrder() {
-        Product laptop = inventory.findProductById(1);
+        Product laptop = inventory.findProductById(1, false);
         cart.addProduct(laptop);
         Order order = new Order(1, cart.getItems());
         assertEquals(1200.00, order.getTotalPrice(), "Implement calculateTotalPrice in Order class.");
@@ -46,7 +46,7 @@ class ECommerceTest {
     @Test
     @DisplayName("3. Asserts that reducing stock quantity is effective on the inventory")
     void testReduceStockAfterOrder() {
-        Product laptop = inventory.findProductById(1);
+        Product laptop = inventory.findProductById(1, false);
         cart.addProduct(laptop);
         new Order(1, cart.getItems());
         inventory.reduceStock(1, 1);
@@ -57,13 +57,13 @@ class ECommerceTest {
     @DisplayName("4. Asserts that removing a product from the inventory, deletes it from the collection")
     void testRemoveProductFromInventory() {
         inventory.removeProduct(2);
-        assertNull(inventory.findProductById(2), "Implement removeProduct in Inventory class.");
+        assertNull(inventory.findProductById(2, false), "Implement removeProduct in Inventory class.");
     }
 
     @Test
     @DisplayName("5. Asserts that removing a product from the shopping chart, deletes it from the collection")
     void testRemoveProductFromCart() {
-        Product mouse = inventory.findProductById(2);
+        Product mouse = inventory.findProductById(2, false);
         cart.addProduct(mouse);
         cart.removeProduct(mouse);
         assertFalse(cart.getItems().contains(mouse), "Implement removeProduct in ShoppingCart class.");
@@ -72,8 +72,8 @@ class ECommerceTest {
     @Test
     @DisplayName("6. Asserts that price of a shopping chart is calculated correctly")
     void testCalculateTotalPriceOfCart() {
-        Product laptop = inventory.findProductById(1);
-        Product mouse = inventory.findProductById(2);
+        Product laptop = inventory.findProductById(1, false);
+        Product mouse = inventory.findProductById(2, false);
         cart.addProduct(laptop);
         cart.addProduct(mouse);
         assertEquals(1225.00, cart.calculateTotal(), "Implement and fix calculateTotal in ShoppingCart class.");
@@ -82,7 +82,7 @@ class ECommerceTest {
     @Test
     @DisplayName("7. Asserts that chart can be cleared of all items")
     void testClearCart() {
-        Product keyboard = inventory.findProductById(3);
+        Product keyboard = inventory.findProductById(3, false);
         cart.addProduct(keyboard);
         cart.clearCart();
         assertTrue(cart.getItems().isEmpty(), "Implement clearCart in ShoppingCart class.");
@@ -107,7 +107,7 @@ class ECommerceTest {
     @DisplayName("10. Asserts that deleting an item twice, throws an Exception")
     void testDeletionResilience() {
         inventory.removeProduct(2);
-        assertNull(inventory.findProductById(2));
+        assertNull(inventory.findProductById(2, false));
 
         assertThrows(ProductNotFoundException.class, () -> inventory.removeProduct(2));
     }
@@ -115,8 +115,8 @@ class ECommerceTest {
     @Test
     @DisplayName("X. Asserts that modification of copies have not effect on items in the inventory")
     void testFindProductById() {
-        Product laptop = inventory.findProductById(1);
+        Product laptop = inventory.findProductById(1, true);
         laptop.setStockQuantity(5);
-        assertEquals(10, inventory.findProductById(1).getStockQuantity(), "A hidden bug is present, find it and fix it");
+        assertEquals(10, inventory.findProductById(1, false).getStockQuantity(), "A hidden bug is present, find it and fix it");
     }
 }
